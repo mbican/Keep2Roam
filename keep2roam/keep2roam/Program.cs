@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
+using keep2roam.Models.GoogleKeep;
 
 namespace keep2roam
 {
@@ -10,9 +11,10 @@ namespace keep2roam
         {
             var fileName = args[0];
             using var file = File.OpenRead(fileName);
-            var model = await JsonSerializer.DeserializeAsync<GoogleKeepCardModel>(
+            var model = await JsonSerializer.DeserializeAsync<CardModel>(
                 file,
-                new JsonSerializerOptions{
+                new JsonSerializerOptions
+                {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 });
             return 0;
