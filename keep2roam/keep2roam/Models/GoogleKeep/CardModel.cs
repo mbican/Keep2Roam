@@ -10,6 +10,7 @@ namespace keep2roam.Models.GoogleKeep
         public bool IsArchived { get; set; }
         public List<AnnotationModel> Annotations { get; set; }
         public List<ListItemModel> ListContent { get; set; }
+        public string TextContent { get; set; }
         public string Title { get; set; }
         public long UserEditedTimestampUsec { get; set; }
         public List<LabelModel> Labels { get; set; }
