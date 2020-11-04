@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "keep2roam": {
+      "commandName": "Project",
+      "commandLineArgs": "SampleData/N_log_twitter_dan_held.json"
+    }
+  }
+}

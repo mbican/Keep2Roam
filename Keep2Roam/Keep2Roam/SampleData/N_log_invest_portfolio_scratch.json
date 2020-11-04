@@ -1,0 +1,23 @@
+{
+    "color": "ORANGE",
+    "isTrashed": false,
+    "isPinned": true,
+    "isArchived": false,
+    "textContent": "$1M?\n• 2 comfortable years of expenses in cash\n    • 24 * €1500 = €36.000\n• rest invest for 10 years\n    • 80% crypto\n        • 95% bitcoin\n        • 5% ethereum\n    • 10% TSLA\n    • 10% gold\n• measure portfolio in BTC (or 200 WMA BTC)\n\nDCA\n• $25 weekly HNS, FIL",
+    "title": "N/log/invest/portfolio_scratch",
+    "userEditedTimestampUsec": 1602785476684000,
+    "labels": [
+        {
+            "name": "! N - Notes"
+        },
+        {
+            "name": "N/log"
+        },
+        {
+            "name": "\" invest"
+        },
+        {
+            "name": "!"
+        }
+    ]
+}
