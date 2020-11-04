@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using CommandLine;
@@ -18,17 +20,25 @@ namespace Keep2Roam
 
         public static async Task<int> RunAndReturnExitCodeAsync(CommandLineArgs args)
         {
-            foreach (var fileName in args.Files)
+            var cards = await DeserializeGoogleKeepCardsAsync(args.Files)
+                .ToListAsync()
+                .ConfigureAwait(false);
+            return 0;
+        }
+
+        public static async IAsyncEnumerable<CardModel> DeserializeGoogleKeepCardsAsync(IEnumerable<string> fileNames)
+        {
+            foreach (var fileName in fileNames)
             {
                 using var file = File.OpenRead(fileName);
-                var model = await JsonSerializer.DeserializeAsync<CardModel>(
+                yield return await JsonSerializer.DeserializeAsync<CardModel>(
                     file,
                     new JsonSerializerOptions
                     {
                         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    });
+                    })
+                    .ConfigureAwait(false);
             }
-            return 0;
         }
     }
 }
