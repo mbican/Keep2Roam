@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using keep2roam.Models.GoogleKeep;
+using Keep2Roam.Models.GoogleKeep;
 
-namespace keep2roam
+namespace Keep2Roam
 {
     public class Program
     {

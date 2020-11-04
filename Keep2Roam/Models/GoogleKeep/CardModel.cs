@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace keep2roam.Models.GoogleKeep
+namespace Keep2Roam.Models.GoogleKeep
 {
     public class CardModel
     {
