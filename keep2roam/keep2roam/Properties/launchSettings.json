@@ -2,7 +2,7 @@
   "profiles": {
     "keep2roam": {
       "commandName": "Project",
-      "commandLineArgs": "SampleData/P_drivedeal_2_development.json"
+      "commandLineArgs": "SampleData/N_log_twitter_dan_held.json"
     }
   }
 }

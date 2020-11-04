@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Update="SampleData\N_log_twitter_dan_held.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="SampleData\N_log_twitter_dan_held.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="SampleData\P_bitcoin-eagle_wasabi.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

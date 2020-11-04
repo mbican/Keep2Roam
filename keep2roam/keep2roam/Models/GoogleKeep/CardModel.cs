@@ -4,6 +4,7 @@ namespace keep2roam.Models.GoogleKeep
 {
     public class CardModel
     {
+        public List<AttachmentModel> Attachments { get; set; }
         public string Color { get; set; }
         public bool IsTrashed { get; set; }
         public bool IsPinned { get; set; }
