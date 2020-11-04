@@ -3,6 +3,14 @@
     "Keep2Roam": {
       "commandName": "Project",
       "commandLineArgs": "SampleData/N_log_twitter_dan_held.json"
+    },
+    "Keep2Roam --help": {
+      "commandName": "Project",
+      "commandLineArgs": "--help"
+    },
+    "Keep2Roam -x": {
+      "commandName": "Project",
+      "commandLineArgs": "-x"
     }
   }
 }
