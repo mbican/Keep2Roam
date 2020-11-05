@@ -2,7 +2,7 @@
   "profiles": {
     "Keep2Roam": {
       "commandName": "Project",
-      "commandLineArgs": "SampleData/N_log_twitter_dan_held.json"
+      "commandLineArgs": "-i SampleData"
     },
     "Keep2Roam --help": {
       "commandName": "Project",

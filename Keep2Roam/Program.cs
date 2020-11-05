@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using CommandLine;
 using Keep2Roam.Models.GoogleKeep;
+using Keep2Roam.Models.RoamResearch;
 
 namespace Keep2Roam
 {
@@ -20,13 +21,58 @@ namespace Keep2Roam
 
         public static async Task<int> RunAndReturnExitCodeAsync(CommandLineArgs args)
         {
-            var cards = await DeserializeGoogleKeepCardsAsync(args.Files)
+            var cards = await DeserializeGoogleKeepCardsDirectoryAsync(args.InputDirectory)
+                .Concat(DeserializeGoogleKeepCardsFilesAsync(args.Files))
                 .ToListAsync()
                 .ConfigureAwait(false);
+            //cards.Sort((a, b) => a.UserEditedTimestampUsec.CompareTo(b.UserEditedTimestampUsec));
+            var pages = new List<PageModel>();
+            foreach (var card in cards)
+            {
+                var children = new List<NodeModel>();
+                if (!string.IsNullOrEmpty(card.TextContent))
+                {
+                    children.Add(
+                        new NodeModel
+                        {
+                            EditTime = card.UserEditedTimestampUsec / 1000000L,
+                            String = card.TextContent,
+                        });
+                }
+                if (0 < card.ListContent?.Count)
+                {
+                    foreach (var item in card.ListContent)
+                    {
+                        var prefix = item.IsChecked ? "{{[[DONE]]}} " : "{{[[TODO]]}} ";
+                        children.Add(new NodeModel
+                        {
+                            EditTime = card.UserEditedTimestampUsec / 1000000L,
+                            String = prefix + item.Text,
+                        });
+                    }
+                }
+                pages.Add(new PageModel
+                {
+                    Title = card.Title,
+                    EditTime = card.UserEditedTimestampUsec / 1000000L,
+                    Children = children,
+                });
+            }
+            using var file = File.OpenWrite("RoamResearchImport.json");
+            file.Seek(0, SeekOrigin.Begin);
+            file.SetLength(0);
+            await JsonSerializer.SerializeAsync(
+                file,
+                pages,
+                new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = new KebabCaseNamingPolicy(),
+                    IgnoreNullValues = true,
+                });
             return 0;
         }
 
-        public static async IAsyncEnumerable<CardModel> DeserializeGoogleKeepCardsAsync(IEnumerable<string> fileNames)
+        public static async IAsyncEnumerable<CardModel> DeserializeGoogleKeepCardsFilesAsync(IEnumerable<string> fileNames)
         {
             foreach (var fileName in fileNames)
             {
@@ -39,6 +85,11 @@ namespace Keep2Roam
                     })
                     .ConfigureAwait(false);
             }
+        }
+
+        public static IAsyncEnumerable<CardModel> DeserializeGoogleKeepCardsDirectoryAsync(string path)
+        {
+            return DeserializeGoogleKeepCardsFilesAsync(Directory.EnumerateFiles(path, "*.json", new EnumerationOptions { MatchCasing = MatchCasing.CaseInsensitive }));
         }
     }
 }
