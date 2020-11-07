@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -58,9 +59,12 @@ namespace Keep2Roam
                     Children = children,
                 });
             }
-            using var file = File.OpenWrite("RoamResearchImport.json");
-            file.Seek(0, SeekOrigin.Begin);
-            file.SetLength(0);
+            using var file =
+                args.OutputFileOverwrite != null
+                ? new FileStream(args.OutputFileOverwrite, FileMode.Create, FileAccess.Write)
+                : args.OutputFile != null
+                    ? new FileStream(args.OutputFile, FileMode.CreateNew, FileAccess.Write)
+                    : Console.OpenStandardOutput();
             await JsonSerializer.SerializeAsync(
                 file,
                 pages,
