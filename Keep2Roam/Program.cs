@@ -52,6 +52,19 @@ namespace Keep2Roam
                         });
                     }
                 }
+                if (0 < card.Labels.Count)
+                {
+                    children = new List<NodeModel>(){ new NodeModel
+                    {
+                        Children = children,
+                        EditTime = card.UserEditedTimestampUsec / 1000000L,
+                        String = string.Join(
+                            " ",
+                            card.Labels
+                                .OrderBy(a => a.Name)
+                                .Select(a => "#[[" + a.Name + "]]")),
+                    } };
+                }
                 pages.Add(new PageModel
                 {
                     Title = card.Title,
