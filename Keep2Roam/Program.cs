@@ -12,6 +12,9 @@ namespace Keep2Roam
 {
     public class Program
     {
+        // source: https://en.wikipedia.org/wiki/Bullet_(typography)#In_Unicode
+        private static readonly ISet<char> Bullets = new HashSet<char>("*•-‣⁎◦∙⁃⁌⁍○◘☙❥❧⦾⦿");
+
         public static async Task<int> Main(string[] args)
         {
             return await Parser.Default.ParseArguments<CommandLineArgs>(args)
@@ -33,12 +36,8 @@ namespace Keep2Roam
                 var children = new List<NodeModel>();
                 if (!string.IsNullOrEmpty(card.TextContent))
                 {
-                    children.Add(
-                        new NodeModel
-                        {
-                            EditTime = card.UserEditedTimestampUsec / 1000000L,
-                            String = card.TextContent,
-                        });
+                    children.AddRange(
+                        ParseText(card.TextContent, card.UserEditedTimestampUsec / 1000000L));
                 }
                 if (0 < card.ListContent?.Count)
                 {
@@ -102,6 +101,61 @@ namespace Keep2Roam
                     })
                     .ConfigureAwait(false);
             }
+        }
+
+        private static IEnumerable<NodeModel> ParseText(string text, long editTime)
+        {
+            var stack = new Stack<(int Indent, char? Bullet, NodeModel Node)>();
+            using var reader = new StringReader(text);
+            while (reader.ReadLine() is string line)
+            {
+                var (indent, bullet, @string) = ParseLine(line);
+                if (string.IsNullOrWhiteSpace(@string))
+                    continue;
+                var pop = null as (int Indent, char? Bullet, NodeModel Node)?;
+                while (0 < stack.Count && indent <= stack.Peek().Indent)
+                    pop = stack.Pop();
+                if (pop != null && stack.Count <= 0)
+                    yield return pop.Value.Node;
+                var node = new NodeModel
+                {
+                    EditTime = editTime,
+                    String = @string,
+                    Children = new List<NodeModel>(),
+                };
+                if (0 < stack.Count)
+                    stack.Peek().Node.Children.Add(node);
+                stack.Push((indent, bullet, node));
+            }
+            while (1 < stack.Count)
+                stack.Pop();
+            if (0 < stack.Count)
+                yield return stack.Pop().Node;
+        }
+
+        private static (int Indent, char? Bullet, string @string) ParseLine(string line)
+        {
+            var indent = 0;
+            var bullet = null as char?;
+            var index = 0;
+            foreach (var c in line)
+            {
+                if (c == '\t')
+                    indent += 8;
+                else if (c == ' ')
+                    indent++;
+                else if (bullet == null && Bullets.Contains(c))
+                {
+                    bullet = c;
+                    indent++;
+                }
+                else
+                {
+                    break;
+                }
+                index++;
+            }
+            return (indent, bullet, line.Substring(index));
         }
 
         public static IAsyncEnumerable<CardModel> DeserializeGoogleKeepCardsDirectoryAsync(string path)
