@@ -52,7 +52,7 @@ namespace Keep2Roam
                         });
                     }
                 }
-                if (0 < card.Labels.Count)
+                if (0 < card.Labels?.Count)
                 {
                     children = new List<NodeModel>(){ new NodeModel
                     {
